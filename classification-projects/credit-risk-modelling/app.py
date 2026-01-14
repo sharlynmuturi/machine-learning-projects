@@ -4,8 +4,8 @@ import numpy as np
 import joblib
 
 # Loading model & encoders
-model = joblib.load("rf_credit_model.pkl")
-encoders = {col: joblib.load(f"{col}_encoder.pkl") for col in ['Sex', 'Housing', 'Saving accounts', 'Checking account', 'Purpose', "Age_bin"]}
+model = joblib.load("models/rf_credit_model.pkl")
+encoders = {col: joblib.load(f"models/{col}_encoder.pkl") for col in ['Sex', 'Housing', 'Saving accounts', 'Checking account', 'Purpose', "Age_bin"]}
 
 # User inputs (raw)
 st.title("Credit Risk Prediction App")
