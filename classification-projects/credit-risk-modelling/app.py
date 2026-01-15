@@ -11,14 +11,14 @@ encoders = {col: joblib.load(f"models/{col}_encoder.pkl") for col in ['Sex', 'Ho
 st.title("Credit Risk Prediction App")
 st.write("Enter applicant information")
 
-age = st.number_input("Age", min_value = 18, max_value = 80, value = 30)
+age = st.number_input("Age", min_value = 18, max_value = 80, value = 35)
 sex = st.selectbox("Sex", ["male", "female"])
 job = st.number_input("Job (0-3)", min_value = 0, max_value = 3, value = 1)
 housing = st.selectbox("Housing", ["own", "rent", "free"])
 saving_accounts = st.selectbox("Saving Accounts", ["unknown", "little", "moderate", "rich", "quite rich"])
 checking_account = st.selectbox("Checking Account", ["unknown", "little", "moderate", "rich"])
 purpose = st.selectbox("Purpose", ["car", "radio/TV", "furniture/equipment", "education", "business", "repairs", "domestic appliances", "vacation/others"])
-credit_amount = st.number_input("Credit Amount", min_value = 0, value = 1000)
+credit_amount = st.number_input("Credit Amount", min_value = 0, value = 1500)
 duration = st.number_input("Duration (months)", min_value = 1, value = 12)
 
 # Reproducing Feature Engineering
@@ -49,6 +49,6 @@ if st.button("Predict Risk"):
     prob = model.predict_proba(input_df)[0][1]
 
     if pred == 1:
-        st.error(f"⚠️ High Credit Risk (Probability: {prob:.2%})")
+        st.error(f"High Credit Risk (Probability: {prob:.2%})")
     else:
-        st.success(f"✅ Low Credit Risk (Probability: {prob:.2%})")
+        st.success(f"Low Credit Risk (Probability: {prob:.2%})")
