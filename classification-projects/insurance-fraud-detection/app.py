@@ -1,35 +1,18 @@
 import streamlit as st
+import joblib
 import pandas as pd
-import numpy as np
-import dill
 import os
 
-from sklearn.preprocessing import LabelEncoder, StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.model_selection import train_test_split
-
-from imblearn.pipeline import Pipeline
-from imblearn.over_sampling import SMOTE
-from imblearn.under_sampling import RandomUnderSampler
-
-from sklearn.metrics import (confusion_matrix, classification_report, roc_auc_score, average_precision_score)
-
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import VotingClassifier
-from xgboost import XGBClassifier
-from lightgbm import LGBMClassifier
-
-import xgboost as xgb
-import lightgbm as lgb
-
-
-
+# Getting absolute path to current file
 BASE_DIR = os.path.dirname(__file__)
 
-# Load model
-with open("fraud_detection_pipeline.pkl", "rb") as f:
-    pipeline = dill.load(f)
+# Load preprocessor and model
+preprocessor_path = os.path.join(BASE_DIR, "models", "preprocessor.pkl")
+preprocessor = joblib.load(preprocessor_path)
+
+model_path = os.path.join(BASE_DIR, "models", "model.pkl")
+model = joblib.load(model_path)
+
 
 st.set_page_config(page_title="Insurance Fraud Detection", layout="centered")
 st.title("Vehicle Insurance Fraud Detection")
@@ -95,6 +78,10 @@ if st.button("Predict Fraud Risk"):
         'Days_Policy_Claim': Days_Policy_Claim,
         'AddressChange_Claim': AddressChange_Claim
     }])
+
+    
+    # Transform input
+    input_data = preprocessor.transform(input_data)
 
     prediction = model.predict(input_data)[0]
     probability = model.predict_proba(input_data)[0][1]
