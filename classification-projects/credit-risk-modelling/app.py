@@ -12,7 +12,11 @@ BASE_DIR = os.path.dirname(__file__)
 model_path = os.path.join(BASE_DIR, "models", "rf_credit_model.pkl")
 model = joblib.load(model_path)
 
-encoders = {col: joblib.load(f"models/{col}_encoder.pkl") for col in ['Sex', 'Housing', 'Saving accounts', 'Checking account', 'Purpose', "Age_bin"]}
+encoder_columns = ['Sex', 'Housing', 'Saving accounts', 'Checking account', 'Purpose', 'Age_bin']
+encoders = {
+    col: joblib.load(os.path.join(BASE_DIR, "models", f"{col}_encoder.pkl"))
+    for col in encoder_columns
+}
 
 # User inputs (raw)
 st.title("Credit Risk Prediction App")
