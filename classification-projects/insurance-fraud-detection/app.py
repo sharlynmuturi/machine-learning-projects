@@ -4,6 +4,17 @@ import numpy as np
 import joblib
 import os
 
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import VotingClassifier, RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+
+from imblearn.over_sampling import SMOTE
+
+import xgboost as xgb
+import lightgbm as lgb
+
 BASE_DIR = os.path.dirname(__file__)
 
 # Loading trained pipeline
