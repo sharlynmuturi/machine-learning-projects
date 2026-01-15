@@ -3,8 +3,11 @@ import pandas as pd
 import numpy as np
 import joblib
 
+BASE_DIR = os.path.dirname(__file__)
+
 # Loading trained pipeline
-model = joblib.load("fraud_detection_pipeline.pkl")
+model_path = os.path.join(BASE_DIR, "fraud_detection_pipeline.pkl")
+model = joblib.load(model_path)
 
 st.set_page_config(page_title="Insurance Fraud Detection", layout="centered")
 st.title("Vehicle Insurance Fraud Detection")
