@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
+import dill
 import os
 
 from sklearn.preprocessing import LabelEncoder, StandardScaler, OneHotEncoder
@@ -24,11 +24,12 @@ import xgboost as xgb
 import lightgbm as lgb
 
 
+
 BASE_DIR = os.path.dirname(__file__)
 
-# Loading trained pipeline
-model_path = os.path.join(BASE_DIR, "fraud_detection_pipeline.pkl")
-model = joblib.load(model_path)
+# Load model
+with open("fraud_detection_pipeline.pkl", "rb") as f:
+    pipeline = dill.load(f)
 
 st.set_page_config(page_title="Insurance Fraud Detection", layout="centered")
 st.title("Vehicle Insurance Fraud Detection")
