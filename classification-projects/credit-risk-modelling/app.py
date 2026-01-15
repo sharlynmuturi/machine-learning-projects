@@ -3,8 +3,15 @@ import pandas as pd
 import numpy as np
 import joblib
 
+import os
+
+# Getting absolute path to current file
+BASE_DIR = os.path.dirname(__file__)
+
 # Loading model & encoders
-model = joblib.load("models/rf_credit_model.pkl")
+model_path = os.path.join(BASE_DIR, "models", "rf_credit_model.pkl")
+model = joblib.load(model_path)
+
 encoders = {col: joblib.load(f"models/{col}_encoder.pkl") for col in ['Sex', 'Housing', 'Saving accounts', 'Checking account', 'Purpose', "Age_bin"]}
 
 # User inputs (raw)
