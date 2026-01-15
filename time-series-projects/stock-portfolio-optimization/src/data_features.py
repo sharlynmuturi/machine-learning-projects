@@ -46,3 +46,23 @@ def compute_expected_returns(forecasts):
         ticker: forecast["yhat"].pct_change().dropna().mean()
         for ticker, forecast in forecasts.items()
     })
+
+def build_forecast_summary(data, forecasts, forecast_days):
+    rows = []
+
+    for ticker, df in data.items():
+        last_price = df["Close"].iloc[-1]
+
+        forecast = forecasts[ticker]
+        expected_price = forecast["yhat"].iloc[-forecast_days:].mean()
+
+        predicted_return = (expected_price - last_price) / last_price
+
+        rows.append({
+            "Ticker": ticker,
+            "Last Price": round(last_price, 2),
+            "Expected Price": round(expected_price, 2),
+            "Predicted Return (%)": round(predicted_return * 100, 2)
+        })
+
+    return pd.DataFrame(rows)

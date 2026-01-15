@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from src.data_features import fetch_stock_data, prepare_for_prophet, compute_historical_returns, compute_expected_returns
+from src.data_features import fetch_stock_data, prepare_for_prophet, compute_historical_returns, compute_expected_returns, build_forecast_summary
 from src.prophet_model import forecast_stock
 from src.portfolio import compute_covariance, optimize_portfolio
 
@@ -43,3 +43,18 @@ if st.button("Run Optimization"):
     st.write(f"Expected Annual Return: {optimal_portfolio['expected_return']:.2%}")
     st.write(f"Annual Volatility: {optimal_portfolio['volatility']:.2%}")
     st.write(f"Sharpe Ratio: {optimal_portfolio['sharpe_ratio']:.2f}")
+
+    summary_df = build_forecast_summary(data=data, forecasts=forecasts, forecast_days=forecast_days)
+    
+    st.subheader("Forecast Summary per Ticker")
+    st.dataframe(summary_df.style.format({"Last Price": "{:.2f}", "Expected Price": "{:.2f}", "Predicted Return (%)": "{:+.2f}%"}),
+        use_container_width=True
+    )
+
+    with st.expander("Model Assumptions"):
+        st.markdown("""
+        - Expected returns estimated using Prophet forecast means  
+        - Risk estimated using historical return covariance  
+        - Portfolio optimized for maximum Sharpe ratio  
+        - No transaction costs or constraints applied  
+        """)
