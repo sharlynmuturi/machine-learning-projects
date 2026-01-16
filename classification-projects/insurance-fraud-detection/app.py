@@ -19,10 +19,10 @@ import lightgbm as lgb
 BASE_DIR = os.path.dirname(__file__)
 
 # Load preprocessor and model
-preprocessor_path = os.path.join(BASE_DIR, "preprocessor.pkl")
+preprocessor_path = os.path.join(BASE_DIR, "data_preprocessor.pkl")
 preprocessor = joblib.load(preprocessor_path)
 
-model_path = os.path.join(BASE_DIR, "model.pkl")
+model_path = os.path.join(BASE_DIR, "ensemble_model.pkl")
 model = joblib.load(model_path)
 
 
