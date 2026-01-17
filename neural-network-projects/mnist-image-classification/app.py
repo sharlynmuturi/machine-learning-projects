@@ -82,31 +82,32 @@ tab1, tab2 = st.tabs(["Draw Digit", "Upload Image"])
 with tab1:
     st.subheader("Draw a digit")
 
-    canvas_result = st_canvas(
-        fill_color="black",
-        stroke_width=6,
-        stroke_color="black",
-        background_color="white",
-        width=280,
-        height=280,
-        drawing_mode="freedraw",
-        key="canvas",
-    )
+    col1, col2 = st.columns([1, 1])
 
-    if canvas_result.image_data is not None:
+    with col1:
+        canvas_result = st_canvas(
+            fill_color="black",
+            stroke_width=6,
+            stroke_color="black",
+            background_color="white",
+            width=280,
+            height=280,
+            drawing_mode="freedraw",
+            key="canvas",
+        )
+
+    if canvas_result and canvas_result.image_data is not None:
         img = canvas_result.image_data.astype(np.uint8)
-
         processed_img = preprocess_image(img)
-
         prediction = model.predict(processed_img)
         digit = np.argmax(prediction)
         confidence = np.max(prediction)
 
-        st.markdown("### Prediction")
-        st.write(f"**Digit:** `{digit}`")
-        st.write(f"**Confidence:** `{confidence:.2%}`")
-
-        st.bar_chart(prediction[0])
+        with col2:
+            st.markdown("### Prediction")
+            st.write(f"**Digit:** `{digit}`")
+            st.write(f"**Confidence:** `{confidence:.2%}`")
+            st.bar_chart(prediction[0])
 
 # Upload tab
 with tab2:
