@@ -12,8 +12,8 @@ from sklearn.compose import ColumnTransformer
 
 BASE_DIR = os.path.dirname(__file__)
 
-preprocessor_path = os.path.join(BASE_DIR, "classification-projects", "vehicle-insurance-fraud-detection", "data-preprocessor.pkl")
-model_path = os.path.join(BASE_DIR, "classification-projects", "vehicle-insurance-fraud-detection", "stack-model.pkl")
+preprocessor_path = os.path.join(BASE_DIR, "data-preprocessor.pkl")
+model_path = os.path.join(BASE_DIR, "stack-model.pkl")
 
 preprocessor = joblib.load(preprocessor_path)
 model = joblib.load(model_path)

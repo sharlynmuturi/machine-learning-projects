@@ -10,10 +10,8 @@ from catboost import CatBoostClassifier
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
-# Getting absolute path to app.py file
 BASE_DIR = os.path.dirname(__file__)
 
-# Load preprocessor and model
 preprocessor_path = os.path.join(BASE_DIR, "data-preprocessor.pkl")
 model_path = os.path.join(BASE_DIR, "stack-model.pkl")
 
