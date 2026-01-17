@@ -6,6 +6,11 @@ import os
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 
+import os
+st.write("Current directory:", os.getcwd())
+st.write("Files:", os.listdir())
+
+
 st.set_page_config(page_title="Handwritten Digit Recognition", layout="centered")
 
 st.title("Handwritten Digit Recognition")
