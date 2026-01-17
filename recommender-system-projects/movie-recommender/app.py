@@ -57,7 +57,7 @@ def recommend(movie_title, n=5):
     return recommendations
 
 # Search box UI
-search_query = st.text_input("Search for a movie", placeholder="Type a movie title then press enter...")
+search_query = st.text_input("Search for a movie", placeholder="Type a movie title, press enter...")
 
 if search_query:
     matches = movies[movies["title"].str.contains(search_query, case=False)]
