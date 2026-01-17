@@ -2,6 +2,7 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 import cv2
+import os
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 
@@ -11,7 +12,12 @@ st.title("Handwritten Digit Recognition")
 st.write("Draw a digit (0–9) or upload an image to get a prediction.")
 
 # Loading the model
-model = tf.keras.models.load_model("cnn_digits.keras")
+@st.cache_resource
+def load_model():
+    model_path = "cnn_digits.h5"
+    return tf.keras.models.load_model(model_path)
+
+model = load_model()
 
 # Pre-Processing Image
 def crop_and_center(img):
