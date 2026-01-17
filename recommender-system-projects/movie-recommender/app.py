@@ -2,6 +2,7 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
+import os
 
 st.set_page_config(page_title="Movie Recommender", layout="wide")
 
@@ -11,10 +12,15 @@ st.title("Movie Recommendation System")
 st.write("Search for a movie and get similar recommendations!")
 
 # Load data
+BASE_DIR = os.path.dirname(__file__)
+
 @st.cache_data
 def load_data():
-    movies = pickle.load(open("movie_list.pkl", "rb"))
-    similarity = pickle.load(open("similarity_list.pkl", "rb"))
+    movies_path = os.path.join(BASE_DIR, "movie_list.pkl")
+    similarity_path = os.path.join(BASE_DIR, "similarity_list.pkl")
+    
+    movies = pickle.load(open(movies_path, "rb"))
+    similarity = pickle.load(open(similarity_path, "rb"))
     return movies, similarity
 
 movies, similarity = load_data()
