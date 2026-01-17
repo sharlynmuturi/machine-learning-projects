@@ -6,11 +6,6 @@ import os
 from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 
-import os
-st.write("Current directory:", os.getcwd())
-st.write("Files:", os.listdir())
-
-
 st.set_page_config(page_title="Handwritten Digit Recognition", layout="centered")
 
 st.title("Handwritten Digit Recognition")
@@ -19,10 +14,11 @@ st.write("Draw a digit (0–9) or upload an image to get a prediction.")
 # Loading the model
 @st.cache_resource
 def load_model():
-    model_path = "cnn_digits.h5"
+    model_path = os.path.join("neural-network-projects", "mnist-image-classification", "cnn_digits.h5")
     return tf.keras.models.load_model(model_path)
 
 model = load_model()
+
 
 # Pre-Processing Image
 def crop_and_center(img):
