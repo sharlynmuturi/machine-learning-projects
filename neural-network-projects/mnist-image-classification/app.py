@@ -13,7 +13,7 @@ st.write("Draw a digit (0–9) or upload an image to get a prediction.")
 # Loading the model
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model("models/cnn_digits.keras")
+    return tf.keras.models.load_model("cnn_digits.keras")
 
 model = load_model()
 
