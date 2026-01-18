@@ -7,9 +7,14 @@ st.set_page_config(page_title="Customer Churn Prediction", layout="centered")
 st.title("Customer Churn Prediction App")
 st.write("Enter customer details to predict churn probability.")
 
+
+BASE_DIR = os.path.dirname(__file__)
+
+model_path = os.path.join(BASE_DIR, "churn_pipeline.pkl")
+
 @st.cache_resource
 def load_model():
-    return joblib.load("churn_pipeline.pkl")
+    return joblib.load(model_path)
 
 model = load_model()
 
