@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import pandas as pd
+import os
 
 st.set_page_config(page_title="Customer Churn Prediction", layout="centered")
 
