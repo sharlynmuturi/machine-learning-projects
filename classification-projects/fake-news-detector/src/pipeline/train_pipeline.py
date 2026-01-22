@@ -12,7 +12,7 @@ def run_training_pipeline():
 
         # Step 1: Data ingestion
         ingestion = DataIngestion()
-        csv_path = ingestion.initiate_data_ingestion()
+        csv_path = ingestion.initiate_data_ingestion(include_scraped=True)
 
         # Step 2: Data transformation & pipeline fitting
         transformer = DataTransformation()

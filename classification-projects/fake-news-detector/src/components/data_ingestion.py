@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from src.logger import get_logger
 from src.exception import CustomException
+from src.components.news_scraper import ReutersScraper, BBCScraper, scrape_bulk
 
 logger = get_logger(__name__)
 
@@ -83,43 +84,104 @@ class DataIngestion:
         except Exception as e:
             raise CustomException(e)
 
-    # FakeNewsNet DATASET
+    # FakeNewsNet DATASET (headline-only CSVs)
     def _load_fakenewsnet(self) -> pd.DataFrame:
-        import pandas as pd
-        import os
-    
-        records = []
-        fakenewsnet_path = self.raw_data_dir / "fakenewsnet"
-    
-        datasets = [
-            ("politifact_fake.csv", 0, "FakeNewsNet-Politifact"),
-            ("politifact_real.csv", 1, "FakeNewsNet-Politifact"),
-            ("gossipcop_fake.csv", 0, "FakeNewsNet-GossipCop"),
-            ("gossipcop_real.csv", 1, "FakeNewsNet-GossipCop"),
-        ]
-    
-        for filename, label, dataset_name in datasets:
-            file_path = fakenewsnet_path / filename
-            if not os.path.exists(file_path):
-                raise FileNotFoundError(f"Missing file: {file_path}")
-    
-            df = pd.read_csv(file_path)
-    
-            # Directly use 'title' as text
-            for _, row in df.iterrows():
-                records.append({
-                    "title": row["title"],
-                    "text": row["title"], 
-                    "source": row.get("news_url", None),
-                    "date": None, 
+        try:
+            logger.info("Loading FakeNewsNet dataset (headline-only)")
+
+            fakenewsnet_path = self.raw_data_dir / "fakenewsnet"
+
+            datasets = [
+                ("politifact_fake.csv", 0, "FakeNewsNet-Politifact"),
+                ("politifact_real.csv", 1, "FakeNewsNet-Politifact"),
+                ("gossipcop_fake.csv", 0, "FakeNewsNet-GossipCop"),
+                ("gossipcop_real.csv", 1, "FakeNewsNet-GossipCop"),
+            ]
+
+            dfs = []
+
+            for filename, label, dataset_name in datasets:
+                file_path = fakenewsnet_path / filename
+                if not file_path.exists():
+                    raise FileNotFoundError(f"Missing file: {file_path}")
+
+                df = pd.read_csv(file_path)
+
+                out_df = pd.DataFrame({
+                    "title": df["title"],
+                    "text": df["title"],          # headline-only
+                    "source": df.get("news_url"),
+                    "date": None,
                     "dataset": dataset_name,
                     "label": label
                 })
-    
+
+                dfs.append(out_df)
+
+            return pd.concat(dfs, ignore_index=True)
+
+        except Exception as e:
+            raise CustomException(e)
+
+
+    # SCRAPED NEWS DATA
+    def _load_scraped_news(self):
+        import feedparser
+        from newspaper import Article
+        import pandas as pd
+        from datetime import datetime
+
+        records = []
+
+        # ===== Reuters RSS =====
+        reuters_feed = "https://www.reuters.com/rssFeed/worldNews"
+        feed = feedparser.parse(reuters_feed)
+
+        for entry in feed.entries[:10]:  # first 10 articles
+            url = entry.link
+            try:
+                article = Article(url)
+                article.download()
+                article.parse()
+
+                records.append({
+                    "title": article.title,
+                    "text": article.text,
+                    "source": "Reuters",
+                    "date": datetime.now(),
+                    "dataset": "Scraped-Reuters",
+                    "label": 1
+                })
+            except Exception as e:
+                print(f"Skipping {url}: {e}")
+
+        # ===== BBC RSS =====
+        bbc_feed = "http://feeds.bbci.co.uk/news/world/rss.xml"
+        feed = feedparser.parse(bbc_feed)
+
+        for entry in feed.entries[:10]:
+            url = entry.link
+            try:
+                article = Article(url)
+                article.download()
+                article.parse()
+
+                records.append({
+                    "title": article.title,
+                    "text": article.text,
+                    "source": "BBC",
+                    "date": datetime.now(),
+                    "dataset": "Scraped-BBC",
+                    "label": 1
+                })
+            except Exception as e:
+                print(f"Skipping {url}: {e}")
+
         return pd.DataFrame(records)
 
+
     # MASTER INGESTION
-    def initiate_data_ingestion(self) -> str:
+    def initiate_data_ingestion(self, include_scraped=True) -> str:
         try:
             logger.info("Starting full data ingestion pipeline")
 
@@ -127,10 +189,13 @@ class DataIngestion:
             isot_df = self._load_isot()
             fakenewsnet_df = self._load_fakenewsnet()
 
-            df = pd.concat(
-                [liar_df, isot_df, fakenewsnet_df],
-                ignore_index=True
-            )
+            dfs = [liar_df, isot_df, fakenewsnet_df]
+
+            if include_scraped:
+                scraped_df = self._load_scraped_news()
+                dfs.append(scraped_df)
+
+            df = pd.concat(dfs, ignore_index=True)
 
             df = df.dropna(subset=["text"])
             df["text"] = df["text"].astype(str)
