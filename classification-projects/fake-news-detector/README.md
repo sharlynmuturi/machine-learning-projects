@@ -4,13 +4,9 @@ This project combines multiple datasets (LIAR, ISOT, and FakeNewsNet) and uses a
 
 | Dataset        | Description                             |
 |----------------|-----------------------------------------|
-| LIAR           | Short political statements with labels |
-| ISOT Fake News | Real vs Fake articles, clean separation |
-| FakeNewsNet    | Headline-only CSVs (Politifact, GossipCop) |
-
-**Note:** For FakeNewsNet, the CSVs only contain **titles and metadata**.  
-If you want full articles, refer to the [FakeNewsNet GitHub repository](https://github.com/KaiDMML/FakeNewsNet) and use the provided downloader scripts.
-
+| [LIAR](https://www.kaggle.com/datasets/doanquanvietnamca/liar-dataset)           | Short political statements with labels |
+| [ISOT Fake News](https://www.kaggle.com/datasets/csmalarkodi/isot-fake-news-dataset) | Real vs Fake articles, clean separation |
+| [FakeNewsNet](https://github.com/KaiDMML/FakeNewsNet)    | Headline-only CSVs (Politifact, GossipCop) |
 
 The project uses a unified ML pipeline:
 

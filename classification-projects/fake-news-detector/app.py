@@ -26,7 +26,7 @@ predictor = load_model()
 
 # Main input box
 st.subheader("Enter the news article text for prediction:")
-user_input = st.text_area("Paste article text here:", height=150)
+user_input = st.text_area("Paste article text here:", height=250)
 
 if st.button("Predict"):
     if not user_input.strip():
