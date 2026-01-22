@@ -13,5 +13,6 @@ seaborn
 WordCloud
 
 streamlit
+altair==4.2.2
 fastapi
 uvicorn
