@@ -1,5 +1,4 @@
 from imblearn.pipeline import Pipeline
-from imblearn.over_sampling import SMOTE
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -43,7 +42,6 @@ class DataTransformation:
         self.pipeline = Pipeline(
             steps=[
                 ("tfidf", TfidfVectorizer(max_features=50000, ngram_range=(1,2), stop_words="english")),
-                ("smote", SMOTE(random_state=42)),
                 ("classifier", self.model)
             ]
         )
@@ -71,7 +69,7 @@ class DataTransformation:
             )
 
             # Fit pipeline on training data
-            logger.info("Fitting pipeline (TF-IDF + SMOTE + Logistic Regression)")
+            logger.info("Fitting pipeline (TF-IDF + Logistic Regression)")
             self.pipeline.fit(X_train, y_train)
 
             # Evaluate on test data
@@ -81,7 +79,7 @@ class DataTransformation:
             logger.info("\n" + classification_report(y_test, y_pred))
 
             # Save the full pipeline
-            # save_object("artifacts/pipeline.pkl", self.pipeline)
+            # save_object("artifacts/fake_news_pipeline.pkl", self.pipeline)
 
             return self.pipeline, X_test, y_test
 

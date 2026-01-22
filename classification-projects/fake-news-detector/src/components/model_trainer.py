@@ -14,7 +14,7 @@ class ModelTrainer:
 
     def __init__(self, pipeline=None):
         """
-        pipeline: Optional pre-built pipeline (TF-IDF + SMOTE + model)
+        pre-built pipeline (TF-IDF + model)
         """
         self.pipeline = pipeline
 
