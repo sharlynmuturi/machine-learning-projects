@@ -81,7 +81,7 @@ class DataTransformation:
             logger.info("\n" + classification_report(y_test, y_pred))
 
             # Save the full pipeline
-            save_object("artifacts/pipeline.pkl", self.pipeline)
+            # save_object("artifacts/pipeline.pkl", self.pipeline)
 
             return self.pipeline, X_test, y_test
 
