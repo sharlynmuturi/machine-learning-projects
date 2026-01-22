@@ -47,5 +47,7 @@ if st.button("Predict"):
             st.markdown(f"**Probability (Fake):** {prob_fake:.2f}")
 
         except Exception as e:
-            st.error("Prediction failed.")
+            import traceback
+            st.error(f"Prediction failed: {e}")
+            st.text(traceback.format_exc())
             logger.error(e)
