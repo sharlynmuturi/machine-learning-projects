@@ -35,6 +35,8 @@ if st.button("Predict"):
         st.error("Pipeline not loaded. Cannot predict.")
     else:
         try:
+
+            user_input = [user_input]  # ensuring it’s a list
             prediction = predictor.predict(user_input)[0]
             probability = predictor.predict_proba(user_input)[0]
 
