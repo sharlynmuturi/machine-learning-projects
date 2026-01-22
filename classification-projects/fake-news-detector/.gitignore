@@ -1,0 +1,11 @@
+data/
+logs/
+*.log
+
+artifacts/pipeline.pkl
+
+venv/
+env/
+.venv/
+
+.ipynb_checkpoints/

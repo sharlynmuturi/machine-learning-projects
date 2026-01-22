@@ -1,0 +1,17 @@
+numpy
+pandas
+scikit-learn
+imbalanced-learn
+
+nltk
+spacy
+tqdm
+
+joblib
+matplotlib
+seaborn
+WordCloud
+
+streamlit
+fastapi
+uvicorn
