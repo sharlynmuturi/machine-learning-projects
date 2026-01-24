@@ -3,15 +3,15 @@ import pandas as pd
 import numpy as np
 import datetime
 import joblib
+import os
 
 st.set_page_config(page_title="Vehicle Insurance Fraud System", layout="wide")
 st.title("Vehicle Insurance Fraud Detection System")
 
-@st.cache_resource
-def load_model():
-    return joblib.load("models/fraud_model.pkl")
+BASE_DIR = os.path.dirname(__file__)
+model_path = os.path.join(BASE_DIR, "models", "fraud_model.pkl")
+ml_model = joblib.load(model_path)
 
-ml_model = load_model()
 
 def compute_fraud_score_demo(claim):
     score = 0
