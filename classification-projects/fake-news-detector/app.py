@@ -22,27 +22,28 @@ def load_model():
 
 predictor = load_model()
 
-left, right = st.columns([3, 1])
 
-with left:
-    user_input = st.text_area(
-        "Article Text",
-        height=270,
-        placeholder="Paste the news article here..."
-    )
+user_input = st.text_area(
+    "Article Text",
+    height=260,
+    placeholder="Paste the news article here..."
+)
 
-with right:
+i1, i2 = st.columns(2)
+
+with i1:
     st.info(
         "**What the Model Analyzes**\n\n"
         "- Writing style & tone\n"
         "- Structural language cues\n"
-        "- Common misinformation markers"     
+        "- Common misinformation markers"
     )
-with right:
+
+with i2:
     st.info(
         "**Limitations**\n\n"
-        "- Predictions are probabilistic, not definitive\n"
-        "- May struggle with satire or new topics"      
+        "- Predictions are probabilistic\n"
+        "- May struggle with satire or new topics"
     )
 
 st.markdown("---")
