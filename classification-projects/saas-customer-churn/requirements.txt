@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+faker
+tqdm
+
+shap
+scikit-learn
+lightgbm
+lifelines
