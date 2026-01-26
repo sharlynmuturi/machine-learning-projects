@@ -16,7 +16,6 @@ st.set_page_config(
 
 BASE_DIR = Path(__file__).parent
 
-DB_PATH = BASE_DIR / "data" / "saas_churn.db"
 DATA_PATH = BASE_DIR / "data" / "churn_features.csv"
 MODEL_PATH = BASE_DIR / "ml" / "model.pkl"
 SURVIVAL_MODEL_PATH = BASE_DIR / "survival-ml" / "survival_model.pkl"
