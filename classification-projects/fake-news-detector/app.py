@@ -8,7 +8,7 @@ logger = get_logger(__name__)
 st.set_page_config(page_title="Fake News Detector", layout="wide")
 
 st.title("Fake News Detector")
-st.caption("Paste a news article and let the model predict whether it is real or fake.")
+st.caption("Paste a news headline or article text below to check if it's likely Fake or Real.")
 
 @st.cache_resource
 def load_model():
