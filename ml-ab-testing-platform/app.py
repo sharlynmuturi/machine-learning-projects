@@ -119,6 +119,24 @@ col4.metric("Decision", latest_run["adjusted_decision"],
             delta_color="inverse" if latest_run["adjusted_decision"] != "SHIP" else "normal")
 
 
+# Detailed runs table
+st.subheader("Detailed Experiment Runs")
+st.dataframe(runs_table.rename(columns={
+    "run_id": "Run ID",
+    "tags.decision": "MLflow Decision",
+    "adjusted_decision": "Adjusted Decision",
+    "metrics.ctr_control": "Control CTR",
+    "metrics.ctr_treatment": "Treatment CTR",
+    "metrics.absolute_lift": "Absolute Lift",
+    "metrics.relative_lift": "Relative Lift",
+    "metrics.p_value": "P-value",
+    "metrics.avg_latency_control": "Control Latency (ms)",
+    "metrics.avg_latency_treatment": "Treatment Latency (ms)",
+    "metrics.users_control": "Users Control",
+    "metrics.users_treatment": "Users Treatment"
+}))
+
+
 # CTR comparison chart
 st.subheader("CTR Comparison by Variant")
 ctr_fig = px.bar(
@@ -176,20 +194,3 @@ for i, row in runs_table.iterrows():
     if decision != "SHIP":
         st.error(f"Run {row['run_id']}: Decision = {decision} (Check guardrails!)")
 
-
-# Detailed runs table
-st.subheader("Detailed Experiment Runs")
-st.dataframe(runs_table.rename(columns={
-    "run_id": "Run ID",
-    "tags.decision": "MLflow Decision",
-    "adjusted_decision": "Adjusted Decision",
-    "metrics.ctr_control": "Control CTR",
-    "metrics.ctr_treatment": "Treatment CTR",
-    "metrics.absolute_lift": "Absolute Lift",
-    "metrics.relative_lift": "Relative Lift",
-    "metrics.p_value": "P-value",
-    "metrics.avg_latency_control": "Control Latency (ms)",
-    "metrics.avg_latency_treatment": "Treatment Latency (ms)",
-    "metrics.users_control": "Users Control",
-    "metrics.users_treatment": "Users Treatment"
-}))
