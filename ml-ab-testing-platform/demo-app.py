@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from streamlit_autorefresh import st_autorefresh
 from statsmodels.stats.power import NormalIndPower
 
@@ -17,8 +18,13 @@ if refresh_interval > 0:
 
 
 # Load experiment metrics
+BASE_DIR = Path(__file__).parent
+
+path = BASE_DIR / "data" / "processed" / "experiment_metrics.csv"
+
+
 @st.cache_data
-def load_data(path="data/processed/experiment_metrics.csv"):
+def load_data():
     return pd.read_csv(path)
 
 df = load_data()
