@@ -1,0 +1,16 @@
+# Python environment
+venv/
+__pycache__/
+*.pyc
+
+# MLflow / SQLite DBs
+mlruns/
+mlflow.db
+document_ai.db
+
+# Trained model
+layoutlm_invoice/
+
+# OS artifacts
+.DS_Store
+Thumbs.db

@@ -1,0 +1,13 @@
+pytesseract
+pdf2image 
+opencv-python 
+pillow 
+transformers 
+datasets 
+mlflow 
+torch 
+watchdog
+torchvision 
+torchaudio --index-url https://download.pytorch.org/whl/cpu
+xlsxwriter
+openpyxl
