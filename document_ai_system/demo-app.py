@@ -7,8 +7,11 @@ from pdf2image import convert_from_path
 st.set_page_config(page_title="Document AI Review Dashboard", layout="wide")
 st.title("Document AI Review Dashboard")
 
-EXCEL_PATH = Path("data/processed/processed_invoices.xlsx")
-RAW_DATA_DIR = Path("data/raw") 
+# Load experiment metrics
+BASE_DIR = Path(__file__).parent
+
+EXCEL_PATH = BASE_DIR / "data" / "processed" / "processed_invoices.xlsx"
+RAW_DATA_DIR = BASE_DIR / "data" / "raw"
 LOW_CONF_THRESHOLD = 0.8  # highlight fields below this
 
 @st.cache_data
@@ -29,7 +32,7 @@ df_field = excel_data[selected_field]
 
 # filter by document
 doc_options = df_field['filename'].unique()
-selected_doc = st.sidebar.selectbox("Filter by Invoice (optional)", ["All"] + list(doc_options))
+selected_doc = st.sidebar.selectbox("Filter by Invoice", ["All"] + list(doc_options))
 if selected_doc != "All":
     df_field = df_field[df_field['filename'] == selected_doc]
 
