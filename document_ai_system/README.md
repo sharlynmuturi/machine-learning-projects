@@ -1,4 +1,4 @@
-# Invoice Document AI Extraction Project
+# Invoice Data Extraction (Document AI)
 
 ## Overview
 
