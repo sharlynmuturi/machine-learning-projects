@@ -38,8 +38,7 @@ def highlight_confidence(row):
 # --- Display all fields per selected document ---
 st.subheader(f"Fields for: {selected_doc}" if selected_doc != "All" else "All Documents")
 st.write(f"Total records: {len(df_doc)}")
-st.dataframe(df_doc[['field_name','field_value','confidence','source']].style.apply(highlight_confidence, axis=1))
-
+st.dataframe(df_doc[['filename','field_name','field_value','confidence','source']].style.apply(highlight_confidence, axis=1))
 
 st.markdown("---")
 st.subheader("Confidence Summary")
@@ -51,4 +50,5 @@ st.write(f"- Fields below threshold ({LOW_CONF_THRESHOLD}): {low_conf_count}")
 
 st.subheader("Low-Confidence Fields")
 low_conf_df = df_doc[df_doc['confidence'] < LOW_CONF_THRESHOLD]
+
 st.dataframe(low_conf_df[['field_name','field_value','confidence','source']] if not low_conf_df.empty else "No low-confidence fields!")
