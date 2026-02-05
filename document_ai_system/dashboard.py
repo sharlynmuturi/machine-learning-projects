@@ -51,4 +51,5 @@ st.write(f"- Fields below threshold ({LOW_CONF_THRESHOLD}): {low_conf_count}")
 st.subheader("Low-Confidence Fields")
 low_conf_df = df_doc[df_doc['confidence'] < LOW_CONF_THRESHOLD]
 
-st.dataframe(low_conf_df[['field_name','field_value','confidence','source']] if not low_conf_df.empty else "No low-confidence fields!")
+st.dataframe(low_conf_df[['filename', 'field_name','field_value','confidence','source']] if not low_conf_df.empty else "No low-confidence fields!")
+
