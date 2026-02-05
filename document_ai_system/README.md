@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project demonstrates an end-to-end **Document AI pipeline** applied to invoice PDFs. The system is designed to extract key fields from invoices, such as invoice number, date, total amount and payment terms—using a combination of **rule-based extraction** and **machine learning**.
+This project demonstrates an end-to-end **Document AI pipeline** applied to invoice PDFs. The system is designed to extract key fields from invoices, such as invoice number, date, total amount and payment terms, using a combination of **rule-based extraction** and **machine learning**.
 
 The goal is to showcase how AI can automate document processing, reduce manual entry and improve operational efficiency.
 
