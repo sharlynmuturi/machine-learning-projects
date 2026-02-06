@@ -53,7 +53,7 @@ The sample invoice PDFs used in this project are a subset sourced from:
   - **SQLite database** 
   - **Excel workbook**
 
-- Enables **human-in-the-loop validation**, where low-confidence fields can be reviewed.
+- Low-confidence fields are singled out for review.
 
 ### MLOps Logging
 - Every extraction event is logged for:
