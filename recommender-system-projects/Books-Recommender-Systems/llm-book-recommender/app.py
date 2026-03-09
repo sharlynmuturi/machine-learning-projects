@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 # Page config
 st.set_page_config(page_title="Semantic Book Recommender", layout="wide")
@@ -8,10 +9,14 @@ st.set_page_config(page_title="Semantic Book Recommender", layout="wide")
 st.title("Semantic Book Recommender")
 st.write("Discover books based on description, category, and emotional tone.")
 
+BASE_DIR = Path(__file__).parent
+
+EXCEL_PATH = BASE_DIR / "books_with_emotions.csv"
+
 # Loading book data
 @st.cache_data
 def load_books():
-    books = pd.read_csv("books_with_emotions.csv")
+    books = pd.read_csv(EXCEL_PATH)
 
     books["large_thumbnail"] = np.where(
         books["thumbnail"].isna(),
