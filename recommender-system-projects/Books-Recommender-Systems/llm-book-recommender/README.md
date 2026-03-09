@@ -115,7 +115,7 @@ OPENAI_API_KEY=your_api_key_here
 ## 1. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements_full.txt
 
 ```
 
