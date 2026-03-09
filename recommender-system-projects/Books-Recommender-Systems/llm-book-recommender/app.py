@@ -118,9 +118,9 @@ if search_button:
                 image = row["large_thumbnail"]
 
                 if isinstance(image, str) and image.startswith("http"):
-                    st.image(image, width=500)
+                    st.image(image, width=400)
                 else:
-                    st.image(COVER_PATH, width=500)
+                    st.image(COVER_PATH, width=400)
 
                 # Title
                 st.markdown(f"**{row['title']}**")
