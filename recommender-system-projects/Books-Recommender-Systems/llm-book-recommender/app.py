@@ -12,6 +12,7 @@ st.write("Discover books based on description, category, and emotional tone.")
 BASE_DIR = Path(__file__).parent
 
 EXCEL_PATH = BASE_DIR / "books_with_emotions.csv"
+COVER_PATH = BASE_DIR / "cover-not-found.jpg"
 
 # Loading book data
 @st.cache_data
@@ -119,7 +120,7 @@ if search_button:
                 if isinstance(image, str) and image.startswith("http"):
                     st.image(image, use_container_width=True)
                 else:
-                    st.image("cover-not-found.jpg", use_container_width=True)
+                    st.image(COVER_PATH, use_container_width=True)
 
                 # Title
                 st.markdown(f"**{row['title']}**")
