@@ -5,6 +5,7 @@ import pdfplumber
 import chromadb
 import uuid
 import os
+from pathlib import Path
 
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_core.prompts import PromptTemplate
@@ -18,8 +19,10 @@ load_dotenv()
 st.set_page_config(page_title="AI Career Assistant", layout="wide")
 st.title("AI Resume & Cover Letter Tailoring")
 
+BASE_DIR = Path(__file__).parent
+
 # Load resume
-resume_path = "resume.pdf"
+resume_path = BASE_DIR / "resume.pdf"
 
 def read_resume(path):
     text = ""
