@@ -1,0 +1,10 @@
+langchain
+langchain-groq
+chromadb
+langchain_community
+pdfplumber
+bs4
+lxml
+streamlit
+requests
+pandas
