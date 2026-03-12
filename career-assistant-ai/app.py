@@ -1,10 +1,10 @@
 import streamlit as st
-import requests
 import pandas as pd
 import pdfplumber
 import chromadb
 import uuid
 import os
+
 from pathlib import Path
 
 from langchain_community.document_loaders import WebBaseLoader
@@ -28,95 +28,115 @@ def read_resume(path):
     text = ""
     with pdfplumber.open(path) as pdf:
         for page in pdf.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text += page_text + "\n"
+            t = page.extract_text()
+            if t:
+                text += t + "\n"
     return text
 
 resume_text = read_resume(resume_path)
-st.success("Resume loaded from project directory")
+st.success("Resume loaded")
 
 
 # ChromaDB setup
 client = chromadb.PersistentClient('vectorstore')
 collection = client.get_or_create_collection(name="portfolio")
 
-# Load your portfolio 
+# Loading portfolio 
 portfolio_path = BASE_DIR / "portfolio.csv"
 portfolio_df = pd.read_csv(portfolio_path)
 
-# Add projects to ChromaDB if empty
 if not collection.count():
     for _, row in portfolio_df.iterrows():
         collection.add(
-            documents=[row["all_text"]],  # vectorizing the full text
+            documents=[row["all_text"]],
             metadatas={
-                "link": row.get("link", ""),
-                "project_name": row.get("project_name", ""),
-                "tech_stack": row.get("tech_stack", "")  # empty string if missing
+                "link": row.get("link",""),
+                "project_name": row.get("project_name",""),
+                "tech_stack": row.get("tech_stack","")
             },
             ids=[str(uuid.uuid4())]
         )
-        
-st.info(f"ChromaDB loaded with {collection.count()} portfolio projects")
+
+st.info(f"ChromaDB loaded with {collection.count()} projects")
 
 
-# Job Link
-job_link = st.text_input("Enter Job Description URL")
-
-
-# Scrape job posting
-def scrape_job_page(url):
-    loader = WebBaseLoader(url)
-    docs = loader.load()
-    if docs:
-        return docs[0].page_content  # get text of the first page
-    return ""
-    
-job_data = None
-if job_link:
-    job_data = scrape_job_page(job_link)
-
-# LLM Setup
+# LLM setup
 api_key = os.getenv("GROQ_API_KEY")
+
 llm = ChatGroq(
-    temperature=0.7,
+    temperature=0.3,
     groq_api_key=api_key,
     model_name="llama-3.3-70b-versatile"
 )
 
 parser = JsonOutputParser()
 
-# Retrieve top portfolio projects
-def get_top_projects(job_text, n=7):
-    results = collection.query(
-        query_texts=[job_text],
-        n_results=n
-    )
-    top_projects_text = ""
-    for doc, meta in zip(results['documents'][0], results['metadatas'][0]):
-        project_name = meta.get("project_name", "Unknown Project")
-        tech_stack = meta.get("tech_stack", "")  # empty string if missing
-        link = meta.get("link", "")
-        
-        top_projects_text += f"""
-Project: {project_name}
-Description: {doc}
-Technologies: {tech_stack}
-Link: {link}
-"""
-    return top_projects_text
 
-top_projects_text = None
-if job_data:
-    top_projects_text = get_top_projects(job_data)
-    st.subheader("Top Portfolio Projects")
-    st.text_area("Relevant Projects", top_projects_text, height=200)
+# Job link
+job_link = st.text_input("Paste Job Description URL")
+
+# Scrape job page
+def scrape_job_page(url):
+    loader = WebBaseLoader(url)
+    docs = loader.load()
+    return docs[0].page_content if docs else ""
+
+page_data = None
+if job_link:
+    page_data = scrape_job_page(job_link)
 
 
-# Prompt Templates
-prompt_resume = PromptTemplate.from_template(
-"""
+# Job extraction prompt
+    
+prompt_extract = PromptTemplate.from_template("""
+You are an expert information extraction system.
+
+### CONTEXT
+The following text was scraped from a company's career page and contains
+information about a job posting. The text may include formatting noise,
+navigation elements, or repeated content.
+
+### TASK
+Extract the job information from the text.
+
+Return a JSON object with the following fields:
+
+- role: The job title
+- experience: Required experience level (years or level such as junior, mid, senior)
+- skills: List of key technical or domain skills required for the role
+- description: A concise 2–5 sentence summary of the job responsibilities
+
+### RULES
+- Extract information only from the provided text.
+- Do NOT invent information.
+- If a field is missing, return null.
+- Skills must be returned as a list of strings.
+- Return ONLY a valid JSON object.
+- Do not include explanations, markdown, backticks, or extra text
+
+### JSON FORMAT
+{{
+  "role": "Job title",
+  "experience": "Experience requirement",
+  "skills": ["skill1", "skill2", "skill3"],
+  "description": "Short description of the role"
+}}
+
+### SCRAPED TEXT
+{page_data}
+""")
+
+chain_extract = prompt_extract | llm | parser
+
+job_data = None
+if page_data:
+
+    with st.spinner("Extracting job details..."):
+        job_data = chain_extract.invoke({"page_data": page_data})
+
+
+# Resume extraction
+prompt_resume = PromptTemplate.from_template("""
 You are an expert resume parser.
 
 ### TASK
@@ -148,15 +168,47 @@ Return a JSON object with the following fields:
 
 ### RESUME TEXT
 {resume_text}
+""")
+
+chain_resume_extract = prompt_resume | llm | parser
+
+resume_data = None
+with st.spinner("Parsing resume..."):
+    resume_data = chain_resume_extract.invoke({"resume_text": resume_text})
+
+
+# Retrieve portfolio projects
+def get_top_projects(job_text, n=7):
+
+    results = collection.query(
+        query_texts=[job_text],
+        n_results=n
+    )
+
+    text = ""
+
+    for meta in results['metadatas'][0]:
+
+        text += f"""
+Project: {meta.get("project_name")}
+Technologies: {meta.get("tech_stack")}
+Link: {meta.get("link")}
 """
-)
 
-chain_resume = prompt_resume | llm | parser
+    return text
 
-# Running the resume extraction
-resume_data = chain_resume.invoke({"resume_text": resume_text})
+top_projects_text = None
+
+if job_data:
+    job_query = job_data["description"] + " " + " ".join(job_data["skills"])
+
+    top_projects_text = get_top_projects(job_query)
+
+    with st.expander("Relevant Portfolio Projects"):
+        st.text(top_projects_text)
 
 
+# Resume tailoring prompt
 prompt_resume_tailor = PromptTemplate.from_template("""
 You are an expert career assistant and resume writer.
 
@@ -201,6 +253,8 @@ The resume should be concise, professional, and optimized for ATS systems.
 Return only the resume text.
 """)
 
+
+# Cover letter prompt
 prompt_cover_letter = PromptTemplate.from_template("""
 You are an expert career assistant.
 
@@ -230,29 +284,48 @@ The cover letter should:
 
 
 # Buttons
-if job_data:
-    if st.button("Tailor Resume"):
-        with st.spinner("Tailoring resume..."):
-            res_resume = chain_resume.invoke({...})
-        chain_resume = prompt_resume_tailor | llm
-        res_resume = chain_resume.invoke({
-            "job_data": job_data,
-            "resume_data": resume_text,
-            "portfolio_projects": top_projects_text
-        })
-        tailored_resume = res_resume["content"] if isinstance(res_resume, dict) else res_resume.content
-        st.subheader("Tailored Resume")
-        st.text_area("Tailored Resume", tailored_resume, height=400)
+col1, col2 = st.columns(2)
 
-    if st.button("Generate Cover Letter"):
-        with st.spinner("Generating Cover Letter..."):
-            res_resume = chain_resume.invoke({...})
-        chain_cover = prompt_cover_letter | llm
-        res_cover = chain_cover.invoke({
-            "job_data": job_data,
-            "resume_data": resume_text,
-            "portfolio_projects": top_projects_text
-        })
-        cover_letter = res_cover["content"] if isinstance(res_cover, dict) else res_cover.content
-        st.subheader("AI Generated Cover Letter")
-        st.text_area("Cover Letter", cover_letter, height=400)
+if job_data:
+
+    with col1:
+
+        if st.button("Generate Tailored Resume"):
+
+            with st.spinner("Generating resume..."):
+
+                chain_resume_tailor = prompt_resume_tailor | llm
+
+                res = chain_resume_tailor.invoke({
+                    "job_data": job_data,
+                    "resume_data": resume_data,
+                    "portfolio_projects": top_projects_text
+                })
+
+                tailored_resume = res.content
+
+            st.subheader("Tailored Resume")
+            st.text_area("", tailored_resume, height=400)
+
+    with col2:
+
+        if st.button("Generate Cover Letter"):
+
+            with st.spinner("Writing cover letter..."):
+
+                chain_cover = prompt_cover_letter | llm
+
+                res = chain_cover.invoke({
+                    "job_data": job_data,
+                    "resume_data": resume_data,
+                    "portfolio_projects": top_projects_text
+                })
+
+                cover_letter = res.content
+
+            st.subheader("Cover Letter")
+            st.text_area("", cover_letter, height=400)
+
+if page_data:
+    st.subheader("Extracted Job Data")
+    st.json(job_data)           
