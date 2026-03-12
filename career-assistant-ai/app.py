@@ -41,8 +41,9 @@ st.success("Resume loaded from project directory")
 client = chromadb.PersistentClient('vectorstore')
 collection = client.get_or_create_collection(name="portfolio")
 
-# Load your portfolio CSV
-portfolio_df = pd.read_csv("portfolio.csv")
+# Load your portfolio 
+portfolio_path = BASE_DIR / "portfolio.csv"
+portfolio_df = pd.read_csv(portfolio_path)
 
 # Add projects to ChromaDB if empty
 if not collection.count():
