@@ -174,8 +174,14 @@ chain_resume_extract = prompt_resume | llm | parser
 
 resume_data = None
 with st.spinner("Parsing resume..."):
-    resume_data = chain_resume_extract.invoke({"resume_text": resume_text})
 
+    @st.cache_data
+    def parse_resume(text):
+        return chain_resume_extract.invoke({"resume_text": text})
+
+    resume_data = parse_resume(resume_text)
+
+    # resume_data = chain_resume_extract.invoke({"resume_text": resume_text})
 
 # Retrieve portfolio projects
 def get_top_projects(job_text, n=7):
