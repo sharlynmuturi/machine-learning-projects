@@ -1,6 +1,0 @@
-streamlit
-pandas
-pymongo
-faker
-scikit-learn
-joblib
