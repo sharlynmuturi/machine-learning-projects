@@ -29,22 +29,6 @@ user_input = st.text_area(
     placeholder="Paste the news article here..."
 )
 
-i1, i2 = st.columns(2)
-
-with i1:
-    st.info(
-        "**What the Model Analyzes**\n\n"
-        "- Writing style & tone\n"
-        "- Common misinformation markers"
-    )
-
-with i2:
-    st.info(
-        "**Limitations**\n\n"
-        "- Predictions are probabilistic\n"
-        "- May struggle with satire or new topics"
-    )
-
 predict = st.button("Predict")
 
 if predict:
