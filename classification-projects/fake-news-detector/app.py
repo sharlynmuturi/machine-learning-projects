@@ -46,7 +46,6 @@ if predict:
             prob_real = probability[1]
             prob_fake = probability[0]
 
-            st.subheader("Prediction Result")
             st.write(f"### **{label}**")
 
             c1, c2 = st.columns(2)
