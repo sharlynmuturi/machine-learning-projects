@@ -35,7 +35,6 @@ with i1:
     st.info(
         "**What the Model Analyzes**\n\n"
         "- Writing style & tone\n"
-        "- Structural language cues\n"
         "- Common misinformation markers"
     )
 
