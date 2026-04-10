@@ -46,7 +46,6 @@ with i2:
         "- May struggle with satire or new topics"
     )
 
-st.markdown("---")
 predict = st.button("Predict")
 
 if predict:
