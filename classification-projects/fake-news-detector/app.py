@@ -25,7 +25,7 @@ predictor = load_model()
 
 user_input = st.text_area(
     "Article Text",
-    height=260,
+    height=200,
     placeholder="Paste the news article here..."
 )
 
